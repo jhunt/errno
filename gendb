@@ -1,0 +1,34 @@
+#!/bin/bash
+
+echo "#ifndef ERRNO_DB_INC"
+echo "#define ERRNO_DB_INC"
+echo
+
+errnos() {
+	sed -e 's/\s*#.*//' known.errno | sort -u
+}
+
+for err in $(errnos); do
+	echo "#ifdef $err"
+	echo "#  define ${err}_CODE $err"
+	echo "# else"
+	echo "#  define ${err}_CODE -1"
+	echo "#endif"
+	echo
+done
+
+cat <<EOF
+struct ecode {
+	const char *name;
+	int         code;
+};
+static struct ecode ECODES[] = {
+EOF
+for err in $(errnos); do
+	printf "  {%-20b %b},\n" "\"${err}\"," "${err}_CODE"
+done
+echo "  {NULL, -1},"
+echo "};";
+
+echo
+echo "#endif"
