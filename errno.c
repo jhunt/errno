@@ -17,7 +17,18 @@ static const char * name(int e)
 	return "(unknown)";
 }
 
-int parse(const char *s)
+static int exists(int e)
+{
+	int i;
+	for (i = 0; ECODES[i].name; i++) {
+		if (ECODES[i].code == e) {
+			return 1;
+		}
+	}
+	return 0;
+}
+
+static int parse(const char *s)
 {
 	char *end;
 	unsigned long x;
@@ -44,6 +55,12 @@ int main (int argc, char **argv)
 		e = parse(argv[i]);
 		if (e < 0) continue;
 		printf("%-16s %d %s\n", name(e), e, desc(e));
+	}
+	if (argc == 1) {
+		for (e = 1; e < 255; e++) {
+			if (!exists(e)) continue;
+			printf("%-16s %d %s\n", name(e), e, desc(e));
+		}
 	}
 	return 0;
 }
