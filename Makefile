@@ -1,3 +1,4 @@
+INSTALLDIR=/usr/local/bin
 all: errno
 static: errno-static
 clean:
@@ -13,5 +14,9 @@ errno.o: errno.c db.inc
 
 db.inc: gendb known.errno
 	./gendb $< > $@
+
+install: errno
+	install errno $(DESTDIR)$(INSTALLDIR)/errno
+
 
 .PHONY: all static clean
