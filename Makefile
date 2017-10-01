@@ -7,10 +7,14 @@ clean:
 errno: errno.o
 
 errno-static: errno.o
-	$(CC) -static $< -o $@
+	$(CC) $(CFLAGS) -static $< -o $@
+
+VERSION := 1.0
+release:
+	CFLAGS=-D'VERSION=\"$(VERSION)\"' make clean errno
 
 errno.o: errno.c db.inc
-	$(CC) -c -o $@ $<
+	$(CC) $(CFLAGS) -c -o $@ $<
 
 db.inc: gendb known.errno
 	./gendb $< > $@
@@ -19,4 +23,4 @@ install: errno
 	install errno $(DESTDIR)$(INSTALLDIR)/errno
 
 
-.PHONY: all static clean
+.PHONY: all static clean release

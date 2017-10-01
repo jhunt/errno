@@ -51,7 +51,25 @@ int main (int argc, char **argv)
 {
 	int i, e;
 
+	if (argc >= 2 && strcmp(argv[1], "-v") == 0) {
+#ifdef VERSION
+		printf("errno v" VERSION "\n");
+#else
+		printf("errno (development version)\n");
+#endif
+		printf("Copyright (c) 2017 James Hunt\n");
+		printf("https://jameshunt.us/code/errno\n");
+		return 0;
+	}
+
 	for (i = 1; i < argc; i++) {
+		if (argv[i][0] == '-') {
+			printf("USAGE: errno [arguments]\n\n");
+			printf("i.e. errno 1 2 3\n");
+			printf("     errno ENOENT EPERM\n");
+			printf("     errno\n");
+			return 1;
+		}
 		e = parse(argv[i]);
 		if (e < 0) continue;
 		printf("%-16s %d %s\n", name(e), e, desc(e));
